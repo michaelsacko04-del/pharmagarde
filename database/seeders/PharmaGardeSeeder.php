@@ -28,17 +28,17 @@ class PharmaGardeSeeder extends Seeder
 
         // Données de test : noms, numéros et coordonnées fictifs ou approximatifs.
         $pharmacies = [
-            ['Pharmacie Test Tanghin', 'Rue de test, Tanghin', 'Tanghin', '70 00 00 01', 12.4000, -1.5070, true],
-            ['Pharmacie Test Zogona', 'Rue de test, Zogona', 'Zogona', '70 00 00 02', 12.3920, -1.4960, false],
-            ['Pharmacie Test Gounghin', 'Rue de test, Gounghin', 'Gounghin', '70 00 00 03', 12.3720, -1.5340, true],
-            ['Pharmacie Test Ouaga 2000', 'Rue de test, Ouaga 2000', 'Ouaga 2000', '70 00 00 04', 12.3070, -1.4830, false],
-            ['Pharmacie Test Dapoya', 'Rue de test, Dapoya', 'Dapoya', '70 00 00 05', 12.3650, -1.5160, true],
-            ['Pharmacie Test Patte d\'Oie', 'Rue de test, Patte d\'Oie', 'Patte d\'Oie', '70 00 00 06', 12.3500, -1.4900, false],
-            ['Pharmacie Test Pissy', 'Rue de test, Pissy', 'Pissy', '70 00 00 07', 12.3400, -1.5700, true],
-            ['Pharmacie Test Cissin', 'Rue de test, Cissin', 'Cissin', '70 00 00 08', 12.3800, -1.5500, false],
+            ['Pharmacie Test Tanghin', 'Rue de test, Tanghin', 'Tanghin', '70 00 00 01', 12.4000, -1.5070],
+            ['Pharmacie Test Zogona', 'Rue de test, Zogona', 'Zogona', '70 00 00 02', 12.3920, -1.4960],
+            ['Pharmacie Test Gounghin', 'Rue de test, Gounghin', 'Gounghin', '70 00 00 03', 12.3720, -1.5340],
+            ['Pharmacie Test Ouaga 2000', 'Rue de test, Ouaga 2000', 'Ouaga 2000', '70 00 00 04', 12.3070, -1.4830],
+            ['Pharmacie Test Dapoya', 'Rue de test, Dapoya', 'Dapoya', '70 00 00 05', 12.3650, -1.5160],
+            ['Pharmacie Test Patte d\'Oie', 'Rue de test, Patte d\'Oie', 'Patte d\'Oie', '70 00 00 06', 12.3500, -1.4900],
+            ['Pharmacie Test Pissy', 'Rue de test, Pissy', 'Pissy', '70 00 00 07', 12.3400, -1.5700],
+            ['Pharmacie Test Cissin', 'Rue de test, Cissin', 'Cissin', '70 00 00 08', 12.3800, -1.5500],
         ];
 
-        foreach ($pharmacies as [$nom, $adresse, $quartier, $telephone, $latitude, $longitude, $deGarde]) {
+        foreach ($pharmacies as [$nom, $adresse, $quartier, $telephone, $latitude, $longitude]) {
             Pharmacie::updateOrCreate(['nom' => $nom], [
                 'adresse' => $adresse,
                 'quartier' => $quartier,
@@ -46,7 +46,6 @@ class PharmaGardeSeeder extends Seeder
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'validee' => true,
-                'de_garde' => $deGarde,
             ]);
         }
 

@@ -18,14 +18,13 @@ class Pharmacie extends Model
     // user_id n'est volontairement pas ici : on le fixe nous-mêmes.
     protected $fillable = [
         'nom', 'adresse', 'quartier', 'telephone',
-        'latitude', 'longitude', 'validee', 'de_garde',
+        'latitude', 'longitude', 'validee',
     ];
 
     protected function casts(): array
     {
         return [
             'validee' => 'boolean',
-            'de_garde' => 'boolean',
             'latitude' => 'float',
             'longitude' => 'float',
         ];

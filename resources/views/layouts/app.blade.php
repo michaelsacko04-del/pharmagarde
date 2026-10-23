@@ -15,13 +15,13 @@
         .hero p { margin: 0 0 14px; }
         .recherche { display: grid; gap: 10px; }
         input, select, button { font: inherit; padding: 12px; border-radius: 8px; border: 1px solid #b7d4c2; width: 100%; }
-        button { background: var(--vert); color: #fff; border: 0; font-weight: 700; cursor: pointer; }
-        button:hover { background: var(--foret); }
+        button { background: var(--foret); color: #fff; border: 0; font-weight: 700; cursor: pointer; }
+        button:hover { background: #084f2c; }
         .carte { border: 1px solid #d5e6dc; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
         .carte h2 { margin: 0 0 4px; font-size: 1.1rem; color: var(--foret); }
-        .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; background: var(--vert); color: #fff; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; background: var(--foret); color: #fff; }
         .vide { background: #fdecea; color: #8a2a1b; padding: 14px; border-radius: 12px; }
-        .erreur { color: var(--corail); font-size: .9rem; }
+        .erreur { color: #b3261e; font-size: .95rem; font-weight: 700; }
         ul { padding-left: 20px; margin: 8px 0 0; }
         .pagination { list-style: none; display: flex; gap: 10px; padding: 0; justify-content: center; }
         .pagination li { padding: 6px 12px; border: 1px solid #b7d4c2; border-radius: 8px; }
@@ -39,10 +39,11 @@
         .case { display: block; margin: 10px 0; }
         .ligne-stock label { display: block; margin: 8px 0; }
         .succes { background: var(--menthe); color: var(--foret); padding: 12px; border-radius: 8px; font-weight: 700; }
-        .bouton { display: inline-block; background: var(--vert); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; }
-        .bouton:hover { background: var(--foret); }
-        .badge.attente { background: var(--corail); }
+        .bouton { display: inline-block; background: var(--foret); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+        .bouton:hover { background: #084f2c; }
+        .badge.attente { background: #b3261e; }
         #carte { height: 320px; border-radius: 12px; margin-bottom: 16px; z-index: 0; }
+        @media (max-width: 480px) { .entete { flex-wrap: wrap; } main { padding: 12px; } .hero { padding: 16px 12px; } }
         @media (min-width: 640px) { .recherche { grid-template-columns: 2fr 1fr auto; } button { width: auto; } }
     </style>
     @stack('styles')
