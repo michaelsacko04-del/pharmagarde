@@ -35,6 +35,12 @@
         .lien:hover { background: rgba(255, 255, 255, .15); }
         .formulaire { display: grid; gap: 10px; }
         label { font-weight: 700; }
+        input[type=checkbox] { width: auto; margin-right: 6px; }
+        .case { display: block; margin: 10px 0; }
+        .ligne-stock label { display: block; margin: 8px 0; }
+        .succes { background: var(--menthe); color: var(--foret); padding: 12px; border-radius: 8px; font-weight: 700; }
+        .bouton { display: inline-block; background: var(--vert); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+        .bouton:hover { background: var(--foret); }
         @media (min-width: 640px) { .recherche { grid-template-columns: 2fr 1fr auto; } button { width: auto; } }
     </style>
 </head>

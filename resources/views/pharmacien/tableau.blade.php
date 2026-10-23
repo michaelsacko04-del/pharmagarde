@@ -16,6 +16,7 @@
                 @endif
             </p>
             <p>{{ $nbDisponibles }} médicaments disponibles sur {{ $nbStocks }} suivis.</p>
+            <p><a class="bouton" href="{{ route('pharmacien.stocks.index') }}">Gérer mon stock</a></p>
         </article>
     @else
         <p class="vide">Aucune pharmacie n'est rattachée à votre compte.</p>
