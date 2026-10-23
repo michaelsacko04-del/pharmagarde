@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+@endpush
+
 @section('contenu')
     <section class="hero">
         <h1>Trouvez votre médicament avant de vous déplacer</h1>
@@ -23,6 +28,10 @@
 
     @if ($recherche)
         <h2>Résultats pour « {{ $q }} »</h2>
+
+        @if (count($marqueurs) > 0)
+            <div id="carte" aria-label="Carte des pharmacies de garde"></div>
+        @endif
 
         @forelse ($pharmacies as $pharmacie)
             <article class="carte">
@@ -59,3 +68,44 @@
         @endif
     @endif
 @endsection
+
+@if (count($marqueurs) > 0)
+    @push('scripts')
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script>
+            const marqueurs = {{ Illuminate\Support\Js::from($marqueurs) }};
+            const carte = L.map('carte');
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; contributeurs <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(carte);
+
+            const points = [];
+
+            marqueurs.forEach(function (m) {
+                // textContent : le texte est affiché tel quel, jamais interprété comme du HTML.
+                const fenetre = document.createElement('div');
+                const titre = document.createElement('strong');
+                titre.textContent = m.nom;
+                fenetre.appendChild(titre);
+
+                const lignes = [m.adresse];
+                if (m.telephone) { lignes.push('Tél. : ' + m.telephone); }
+                m.medicaments.forEach(function (med) { lignes.push(med); });
+
+                lignes.forEach(function (texte) {
+                    const ligne = document.createElement('div');
+                    ligne.textContent = texte;
+                    fenetre.appendChild(ligne);
+                });
+
+                L.marker([m.lat, m.lng]).addTo(carte).bindPopup(fenetre);
+                points.push([m.lat, m.lng]);
+            });
+
+            carte.fitBounds(points, { padding: [30, 30], maxZoom: 15 });
+        </script>
+    @endpush
+@endif

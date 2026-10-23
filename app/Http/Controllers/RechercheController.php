@@ -25,6 +25,7 @@ class RechercheController extends Controller
             ->pluck('quartier');
 
         $pharmacies = null;
+        $marqueurs = collect();
 
         if ($recherche) {
             $filtreMedicament = fn ($m) => $m->where('nom', 'like', '%'.$q.'%');
@@ -43,8 +44,25 @@ class RechercheController extends Controller
                 ->orderBy('nom')
                 ->paginate(10)
                 ->withQueryString();
+
+            // Données envoyées à la carte : uniquement les pharmacies localisées.
+            $marqueurs = $pharmacies->getCollection()
+                ->filter(fn ($p) => $p->latitude !== null && $p->longitude !== null)
+                ->map(fn ($p) => [
+                    'nom' => $p->nom,
+                    'adresse' => $p->adresse,
+                    'telephone' => $p->telephone,
+                    'lat' => $p->latitude,
+                    'lng' => $p->longitude,
+                    'medicaments' => $p->stocks
+                        ->map(fn ($s) => $s->medicament->nom.' ('.$s->quantite.' en stock)')
+                        ->values()
+                        ->all(),
+                ])
+                ->values()
+                ->all();
         }
 
-        return view('recherche.index', compact('q', 'quartier', 'quartiers', 'recherche', 'pharmacies'));
+        return view('recherche.index', compact('q', 'quartier', 'quartiers', 'recherche', 'pharmacies', 'marqueurs'));
     }
 }
