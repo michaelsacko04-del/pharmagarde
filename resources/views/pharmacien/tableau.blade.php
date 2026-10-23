@@ -14,10 +14,10 @@
 
             <p>
                 Statut :
-                @if ($pharmacie->de_garde)
+                @if ($pharmacie->estDeGarde())
                     <span class="badge">De garde</span>
                 @else
-                    Pas de garde actuellement
+                    Pas de garde aujourd'hui
                 @endif
             </p>
             <p>{{ $nbDisponibles }} médicaments disponibles sur {{ $nbStocks }} suivis.</p>

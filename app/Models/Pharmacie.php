@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,10 +41,35 @@ class Pharmacie extends Model
         return $this->hasMany(Stock::class);
     }
 
+    public function gardes(): HasMany
+    {
+        return $this->hasMany(Garde::class);
+    }
+
     public function medicaments(): BelongsToMany
     {
         return $this->belongsToMany(Medicament::class, 'stocks')
             ->withPivot('disponible', 'quantite')
             ->withTimestamps();
+    }
+
+    // Règle unique : une pharmacie est de garde si une garde couvre la date du jour.
+    public function scopeDeGarde(Builder $query): Builder
+    {
+        $aujourdhui = today()->toDateString();
+
+        return $query->whereHas('gardes', fn ($g) => $g
+            ->whereDate('debut', '<=', $aujourdhui)
+            ->whereDate('fin', '>=', $aujourdhui));
+    }
+
+    public function estDeGarde(): bool
+    {
+        $aujourdhui = today()->toDateString();
+
+        return $this->gardes()
+            ->whereDate('debut', '<=', $aujourdhui)
+            ->whereDate('fin', '>=', $aujourdhui)
+            ->exists();
     }
 }

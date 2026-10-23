@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminGardeController;
 use App\Http\Controllers\AdminPharmacieController;
 use App\Http\Controllers\ConnexionController;
 use App\Http\Controllers\RechercheController;
@@ -34,4 +35,7 @@ Route::middleware(['auth', VerifieRole::class.':admin'])
         Route::get('/pharmacies', [AdminPharmacieController::class, 'index'])->name('pharmacies.index');
         Route::patch('/pharmacies/{pharmacie}/validation', [AdminPharmacieController::class, 'validation'])
             ->name('pharmacies.validation');
+        Route::get('/gardes', [AdminGardeController::class, 'index'])->name('gardes.index');
+        Route::post('/gardes', [AdminGardeController::class, 'store'])->name('gardes.store');
+        Route::delete('/gardes/{garde}', [AdminGardeController::class, 'destroy'])->name('gardes.destroy');
     });

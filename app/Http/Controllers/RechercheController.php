@@ -32,7 +32,7 @@ class RechercheController extends Controller
 
             $pharmacies = Pharmacie::query()
                 ->where('validee', true)
-                ->where('de_garde', true)
+                ->deGarde()
                 ->when($quartier !== '', fn ($query) => $query->where('quartier', $quartier))
                 ->whereHas('stocks', fn ($s) => $s
                     ->where('disponible', true)
