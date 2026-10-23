@@ -23,6 +23,7 @@ class TableauDeBordController extends Controller
             'nbPharmacies' => Pharmacie::count(),
             'nbDeGarde' => Pharmacie::where('de_garde', true)->count(),
             'nbValidees' => Pharmacie::where('validee', true)->count(),
+            'nbEnAttente' => Pharmacie::where('validee', false)->count(),
             'nbMedicaments' => Medicament::count(),
         ]);
     }

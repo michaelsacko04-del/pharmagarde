@@ -41,6 +41,7 @@
         .succes { background: var(--menthe); color: var(--foret); padding: 12px; border-radius: 8px; font-weight: 700; }
         .bouton { display: inline-block; background: var(--vert); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; }
         .bouton:hover { background: var(--foret); }
+        .badge.attente { background: var(--corail); }
         #carte { height: 320px; border-radius: 12px; margin-bottom: 16px; z-index: 0; }
         @media (min-width: 640px) { .recherche { grid-template-columns: 2fr 1fr auto; } button { width: auto; } }
     </style>

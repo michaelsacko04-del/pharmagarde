@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminPharmacieController;
 use App\Http\Controllers\ConnexionController;
 use App\Http\Controllers\RechercheController;
 use App\Http\Controllers\StockController;
@@ -30,4 +31,7 @@ Route::middleware(['auth', VerifieRole::class.':pharmacien'])
 Route::middleware(['auth', VerifieRole::class.':admin'])
     ->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [TableauDeBordController::class, 'admin'])->name('tableau');
+        Route::get('/pharmacies', [AdminPharmacieController::class, 'index'])->name('pharmacies.index');
+        Route::patch('/pharmacies/{pharmacie}/validation', [AdminPharmacieController::class, 'validation'])
+            ->name('pharmacies.validation');
     });

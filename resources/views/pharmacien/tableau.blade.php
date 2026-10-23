@@ -7,6 +7,11 @@
         <article class="carte">
             <h2>{{ $pharmacie->nom }}</h2>
             <p>{{ $pharmacie->adresse }} ({{ $pharmacie->quartier }})</p>
+
+            @unless ($pharmacie->validee)
+                <p class="vide">Votre pharmacie est en attente de validation : elle n'apparaît pas encore dans les recherches.</p>
+            @endunless
+
             <p>
                 Statut :
                 @if ($pharmacie->de_garde)
