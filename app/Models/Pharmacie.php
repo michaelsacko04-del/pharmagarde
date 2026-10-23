@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,6 +14,7 @@ class Pharmacie extends Model
 
     protected $table = 'pharmacies';
 
+    // user_id n'est volontairement pas ici : on le fixe nous-mêmes.
     protected $fillable = [
         'nom', 'adresse', 'quartier', 'telephone',
         'latitude', 'longitude', 'validee', 'de_garde',
@@ -26,6 +28,11 @@ class Pharmacie extends Model
             'latitude' => 'float',
             'longitude' => 'float',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function stocks(): HasMany

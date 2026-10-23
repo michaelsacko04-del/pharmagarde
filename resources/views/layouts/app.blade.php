@@ -27,11 +27,32 @@
         .pagination li { padding: 6px 12px; border: 1px solid #b7d4c2; border-radius: 8px; }
         .pagination a { color: var(--foret); text-decoration: none; font-weight: 700; }
         .disabled { color: #9bb3a5; }
+        .entete { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .entete a { color: #fff; text-decoration: none; }
+        .entete nav { display: flex; align-items: center; gap: 12px; font-weight: 400; font-size: .95rem; }
+        .inline { margin: 0; }
+        .lien { width: auto; background: transparent; border: 1px solid #fff; padding: 6px 12px; color: #fff; }
+        .lien:hover { background: rgba(255, 255, 255, .15); }
+        .formulaire { display: grid; gap: 10px; }
+        label { font-weight: 700; }
         @media (min-width: 640px) { .recherche { grid-template-columns: 2fr 1fr auto; } button { width: auto; } }
     </style>
 </head>
 <body>
-    <header>PharmaGarde</header>
+    <header class="entete">
+        <a href="{{ route('recherche') }}" class="logo">PharmaGarde</a>
+        <nav>
+            @auth
+                <span>{{ auth()->user()->name }}</span>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="lien">Déconnexion</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}">Connexion</a>
+            @endauth
+        </nav>
+    </header>
     <main>
         @yield('contenu')
     </main>
