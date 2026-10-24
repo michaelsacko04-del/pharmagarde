@@ -1,58 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PharmaGarde
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+*Trouver un médicament dans une pharmacie de garde, avant de se déplacer.*
 
-## About Laravel
+Application web (Laravel et MySQL) pensée pour Ouagadougou : un usager cherche un médicament depuis son téléphone et voit, sur une liste et sur une carte, quelles pharmacies de garde l'ont en stock.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+![Recherche d'un médicament avec la carte des pharmacies de garde](docs/captures/recherche.png)
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Le problème
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+La nuit, le week-end ou un jour férié, on perd du temps à passer de pharmacie en pharmacie pour trouver celle qui est de garde *et* qui possède le bon médicament. PharmaGarde permet de le vérifier avant de partir.
 
-## Agentic Development
+## Fonctionnalités
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+| Espace | Fonctionnalités |
+|---|---|
+| *Usager* (sans compte) | Recherche d'un médicament par nom, filtre par quartier, résultats paginés, carte interactive avec fenêtre d'information |
+| *Pharmacien* | Connexion, tableau de bord, mise à jour du stock (disponibilité et quantité) de *sa* pharmacie uniquement |
+| *Administrateur* | Validation ou suspension des pharmacies, planning des gardes par dates (sans chevauchement), statistiques, journal d'audit |
 
-```bash
-composer require laravel/boost --dev
+## Technologies
 
-php artisan boost:install
-```
+- PHP et *Laravel 13* (architecture MVC, Eloquent, Blade)
+- *MySQL* (migrations, seeders, clés étrangères, index)
+- *Leaflet* et *OpenStreetMap* pour la carte (gratuits, sans clé d'API)
+- *Git* et *GitHub* (une branche par fonctionnalité)
+- Développé avec PHP 8.5 et MySQL 8.4 sous Ubuntu (WSL2)
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Sécurité
 
-## Contributing
+- Mots de passe *hachés* ; identifiants, clés et secrets dans .env, jamais publiés (.env.example sert de modèle)
+- Protection *CSRF* sur tous les formulaires, et *injection SQL* évitée grâce à Eloquent (requêtes préparées)
+- Protection *XSS* : affichage échappé par Blade, textContent dans les fenêtres de la carte, Js::from pour les données envoyées à JavaScript
+- *Validation* côté serveur de toutes les entrées
+- *Autorisations par rôle* (middleware) et *par propriétaire* (Policy) : un pharmacien ne peut pas modifier le stock d'une autre pharmacie (faille IDOR évitée)
+- Protection contre l'*élévation de privilèges* : le rôle n'est jamais modifiable depuis un formulaire ($fillable)
+- *Limitation des tentatives* de connexion (5 par minute) et renouvellement de la session après connexion
+- *Journal d'audit* des validations de pharmacies et des modifications du planning
+- Pages d'erreur personnalisées qui ne révèlent aucun détail technique
+- Intégrité des scripts externes vérifiée (attribut integrity sur Leaflet)
+- Les comptes de démonstration ne sont jamais créés en production
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Installation
 
-## Code of Conduct
+Prérequis : PHP, Composer, MySQL et Git.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+~~~bash
+git clone https://github.com/michaelsacko04-del/pharmagarde.git
+cd pharmagarde
+composer install
+cp .env.example .env
+php artisan key:generate
+~
 
-## Security Vulnerabilities
+Créez la base de données et un utilisateur dédié (remplacez le mot de passe par le vôtre) :
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+~~~sql
+CREATE DATABASE pharmagarde CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE pharmagarde_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'pharma_user'@'localhost' IDENTIFIED BY 'votre-mot-de-passe';
+GRANT ALL PRIVILEGES ON pharmagarde.* TO 'pharma_user'@'localhost';
+GRANT ALL PRIVILEGES ON pharmagarde_test.* TO 'pharma_user'@'localhost';
+FLUSH PRIVILEGES;
+~
 
-## License
+Dans le fichier .env, renseignez la connexion :
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+~~~env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pharmagarde
+DB_USERNAME=pharma_user
+DB_PASSWORD=votre-mot-de-passe
+~
+
+Puis créez les tables, remplissez-les de données de test et lancez le serveur :
+
+~~~bash
+php artisan migrate --seed
+php artisan serve
+~
+
+L'application est disponible sur http://127.0.0.1:8000. Aucune installation de Node.js n'est nécessaire.
+
+## Comptes de test
+
+Créés par le seeder, *uniquement en local* (refusés en production) :
+
+| Rôle | E-mail | Mot de passe |
+|---|---|---|
+| Administrateur | admin@pharmagarde.test | TestPharma-2026 |
+| Pharmacien (Tanghin) | pharmacien1@pharmagarde.test | TestPharma-2026 |
+| Pharmacien (Dapoya) | pharmacien2@pharmagarde.test | TestPharma-2026 |
+
+Les pharmacies, noms, téléphones et coordonnées de la base sont *fictifs*, uniquement pour la démonstration.
+
+## Tests
+
+26 tests automatiques vérifient la recherche, les accès par rôle, la limitation des connexions, la modification du stock (y compris l'interdiction de toucher au stock d'une autre pharmacie) et le planning des gardes. Ils utilisent une base séparée (pharmagarde_test) et ne touchent jamais aux données de développement.
+
+~~~bash
+php artisan test
+~
+
+## Modèle de données
+
+| Table | Rôle |
+|---|---|
+| users | Comptes et rôles (usager, pharmacien, admin) |
+| pharmacies | Pharmacies, coordonnées, validation, propriétaire (user_id) |
+| medicaments | Liste des médicaments |
+| stocks | Lien pharmacie et médicament : disponibilité et quantité (clé unique sur le couple) |
+| gardes | Périodes de garde d'une pharmacie (début et fin) |
+
+Une pharmacie est « de garde » si une garde couvre la date du jour (Pharmacie::deGarde()).
+
+## Pistes d'amélioration
+
+- Mise en ligne de l'application (HTTPS)
+- API REST documentée et export des statistiques
+- Alertes quand un médicament redevient disponible
+- Notifications par SMS
+
+## Auteur
+
+*Sacko*, étudiant en Génie Informatique, Ouagadougou (Burkina Faso).
+GitHub : [michaelsacko04-del](https://github.com/michaelsacko04-del)
